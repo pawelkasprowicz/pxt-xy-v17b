@@ -1,24 +1,94 @@
 
-> Otwórz tę stronę na [https://pawelkasprowicz.github.io/pxt-xy-v17b/](https://pawelkasprowicz.github.io/pxt-xy-v17b/)
+# XY-V17B MP3 Player for micro:bit
 
-## Użyj jako rozszerzenia
+Biblioteka MakeCode do sterowania modulem MP3 XY-V17B
+przez UART za pomoca BBC micro:bit V2.
 
-To repozytorium można dodać jako **rozszerzenie** w MakeCode.
+## Funkcje
 
-* otwórz [https://makecode.microbit.org/](https://makecode.microbit.org/)
-* kliknij na **Nowy Projekt**
-* kliknij **Rozszerzenia** w menu oznaczonym kołem zębatym
-* szukaj **https://github.com/pawelkasprowicz/pxt-xy-v17b** i importuj
+- Odtwarzanie wybranego pliku MP3
+- Zatrzymywanie odtwarzania
+- Pauza
+- Regulacja glosnosci 0-30
+- Automatyczne zapetlenie utworu
+- Wykrywanie konca odtwarzania
+- Odczyt stanu odtwarzacza
 
-## Edytuj ten projekt
+## Podlaczenie
 
-Aby edytować to repozytorium w MakeCode.
+| micro:bit | XY-V17B |
+|-----------|---------|
+| P13 (TX)  | RX      |
+| P15 (RX)  | TX      |
+| GND       | GND     |
 
-* otwórz [https://makecode.microbit.org/](https://makecode.microbit.org/)
-* kliknij **Importuj**, a następnie **Importuj URL**
-* wklej **https://github.com/pawelkasprowicz/pxt-xy-v17b** i kliknij importuj
+Modul XY-V17B wymaga osobnego zasilania 5 V.
 
-#### Metadane (używane do wyszukiwania, renderowania)
+UART: 9600 baud.
 
-* for PXT/microbit
-<script src="https://makecode.com/gh-pages-embed.js"></script><script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>
+## Konfiguracja trybu UART
+
+CON1 -> GND przez 10 kOhm
+
+CON2 -> GND przez 10 kOhm
+
+CON3 -> 3.3 V przez 10 kOhm
+
+## Karta microSD
+
+Pliki MP3 umiesc w katalogu glownym karty.
+
+Przykladowe nazwy:
+
+- 00001.mp3
+- 00002.mp3
+- 00003.mp3
+
+## Przykladowy program
+
+```typescript
+xyv17b.init(SerialPin.P13, SerialPin.P15)
+xyv17b.setVolume(15)
+xyv17b.setLoop(true)
+
+input.onButtonPressed(Button.A, function () {
+    xyv17b.play(1)
+})
+
+input.onButtonPressed(Button.B, function () {
+    xyv17b.play(2)
+})
+
+input.onButtonPressed(Button.AB, function () {
+    xyv17b.stop()
+})
+```
+
+## Dostepne funkcje
+
+| Funkcja | Opis |
+|---------|------|
+| init(tx, rx) | Inicjalizacja UART |
+| play(track) | Odtwarzanie pliku |
+| stop() | Zatrzymanie |
+| pause() | Pauza |
+| setVolume(level) | Glosnosc 0-30 |
+| getVolume() | Odczyt ustawionej glosnosci |
+| setLoop(enabled) | Zapetlenie |
+| isPlaying() | Czy odtwarza |
+| isFinished() | Czy zakonczono |
+| getStatus() | Status modulu |
+
+## Uwagi
+
+Biblioteka nie wymaga wyswietlacza OLED.
+
+Status odtwarzacza jest sprawdzany automatycznie
+co 200 ms.
+
+Zapetlenie jest realizowane programowo.
+
+## Autor
+
+Pawel Kasprowicz
+```
